@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeSite AI - Full Platform</title>
+    
+    <!-- Google Fonts for Inter and Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+    <style>
+        :root {
+            /* Core Theme Colors */
+            --bg-main: #101623;
+            --bg-card: #182032;
+            --bg-card-hover: #1e283d;
+            
+            /* Accents */
+            --accent-green: #00d26a;
+            --accent-green-dim: rgba(0, 210, 106, 0.15);
+            --accent-yellow: #facc15;
+            --accent-yellow-dim: rgba(250, 204, 21, 0.15);
+            --accent-red: #f87171;
+            --accent-red-dim: rgba(248, 113, 113, 0.15);
+            --accent-blue: #3b82f6;
+            --accent-blue-dim: rgba(59, 130, 246, 0.15);
+            
+            /* Text */
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            /* Structural */
+            --border-radius: 16px;
+            --border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505; 
+            display: flex;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+
+        /* Mobile Container */
+        .mobile-app-container {
+            width: 100%; max-width: 414px; 
+            background-color: var(--bg-main); min-height: 100vh;
+            position: relative; overflow-x: hidden;
+            border-left: 1px solid #333; border-right: 1px solid #333;
+        }
+
+        /* Screen Management */
+        .screen { display: none; padding: 24px; animation: fadeIn 0.3s ease; padding-bottom: 40px; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Utility Classes */
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .align-center { align-items: center; }
+        .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; }
+        .mb-1 { margin-bottom: 8px; } .mb-2 { margin-bottom: 16px; } .mb-3 { margin-bottom: 24px; } .mb-4 { margin-bottom: 32px; }
+        .text-sm { font-size: 14px; } .text-xs { font-size: 12px; }
+        .text-secondary { color: var(--text-secondary); } .text-center { text-align: center; }
+        
+        /* Typography */
+        h1 { font-size: 24px; font-weight: 700; }
+        h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+        /* Icon Button */
+        .icon-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        /* Nav Header (For inner pages) */
+        .nav-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .back-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; color: white;
+        }
+
+        /* Nav List Items */
+        .nav-list-item {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; cursor: pointer; font-weight: 600;
+        }
+
+        /* ====== 1. LOGIN ====== */
+        .logo-container { margin-top: 80px; margin-bottom: 60px; text-align: center; }
+        .shield-icon {
+            background: var(--accent-green-dim); border: 1px solid var(--accent-green); color: var(--accent-green);
+            width: 80px; height: 80px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;
+        }
+        .shield-icon span { font-size: 40px; }
+        .login-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--border-radius); padding: 20px;
+            display: flex; align-items: center; margin-bottom: 16px; cursor: pointer;
+        }
+        .login-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 16px; }
+
+        /* ====== 2. SUPERVISOR DASHBOARD ====== */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 12px; text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 700; margin: 8px 0 4px 0; }
+        .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .sensor-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; }
+        .sensor-header { display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 13px; margin-bottom: 12px; }
+        .sensor-value { font-size: 22px; font-weight: 700; }
+        
+        .badge { background: var(--accent-red); color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; position: absolute; top: -4px; right: -4px; }
+
+        /* ====== 3. ZONE MAP ====== */
+        .map-container {
+            width: 100%; height: 300px;
+            background-image: url('https://images.unsplash.com/photo-1584466547192-16e6d1c9fbcf?q=80&w=600&auto=format&fit=crop');
+            background-size: cover; background-position: center; border-radius: var(--border-radius);
+            position: relative; margin-bottom: 16px; overflow: hidden; border: 1px solid var(--border-color);
+        }
+        .map-overlay { position: absolute; border: 2px dashed; border-radius: 4px; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; }
+        .map-overlay.safe { border-color: var(--accent-green); background: var(--accent-green-dim); }
+        .map-overlay.caution { border-color: var(--accent-yellow); background: var(--accent-yellow-dim); }
+        .map-overlay.danger { border-color: var(--accent-red); background: var(--accent-red-dim); }
+        .map-dot { width: 12px; height: 12px; background: white; border: 3px solid #3b82f6; border-radius: 50%; position: absolute; }
+        .zone-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .zone-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; }
+        .zone-card.border-green { border-color: rgba(0, 210, 106, 0.3); }
+        .zone-card.border-yellow { border-color: rgba(250, 204, 21, 0.3); }
+        .zone-card.border-red { border-color: rgba(248, 113, 113, 0.3); }
+
+        /* ====== 4. WORKER ROSTER ====== */
+        .roster-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 12px; padding: 0 12px; letter-spacing: 0.5px; }
+        .roster-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 16px; margin-bottom: 12px;
+        }
+        .roster-card.at-risk { border-color: rgba(248, 113, 113, 0.4); background: linear-gradient(to right, rgba(248, 113, 113, 0.05), var(--bg-card)); }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+        .status-tag { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .status-at-risk { background: var(--accent-red-dim); color: var(--accent-red); }
+        .status-active { background: var(--accent-green-dim); color: var(--accent-green); }
+        .status-idle { background: var(--accent-yellow-dim); color: var(--accent-yellow); }
+        .status-offline { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+        .roster-critical-alert { border: 1px solid rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.1); color: var(--accent-red); padding: 12px; border-radius: 8px; font-size: 12px; margin-top: 16px; display: flex; gap: 8px; align-items: center; }
+
+        /* ====== 5. ALERT HISTORY ====== */
+        .timeline { position: relative; padding-left: 28px; margin-top: 16px; }
+        .timeline::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 1px; background: var(--border-color); }
+        .timeline-item { position: relative; margin-bottom: 24px; }
+        .timeline-icon {
+            position: absolute; left: -28px; top: 0; width: 28px; height: 28px; border-radius: 50%;
+            background: var(--bg-main); display: flex; align-items: center; justify-content: center; border: 1px solid;
+            transform: translateX(-50%);
+        }
+        .timeline-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; }
+        .timeline-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
+        /* ====== 6. WORKER DASHBOARD (SOS) ====== */
+        .vitals-card {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--border-radius);
+            padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+        }
+        .vital-primary { font-size: 36px; font-weight: 700; color: var(--accent-green); }
+        .sos-container { text-align: center; margin-bottom: 32px; padding: 20px 0; }
+        .sos-btn {
+            width: 160px; height: 160px; border-radius: 50%;
+            background: linear-gradient(145deg, #ef4444, #b91c1c); color: white; font-size: 32px; font-weight: 800; border: none;
+            box-shadow: 0 0 0 10px rgba(248, 113, 113, 0.1), 0 0 40px rgba(248, 113, 113, 0.4);
+            cursor: pointer; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(248, 113, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+        }
+
+        /* ====== 7. REPORT INCIDENT ====== */
+        .form-label { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: block; }
+        .chip-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+        .chip {
+            background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500;
+        }
+        .chip.active-yellow { background: var(--accent-yellow-dim); border-color: var(--accent-yellow); color: var(--accent-yellow); }
+        .chip.active-blue { background: var(--accent-blue-dim); border-color: var(--accent-blue); color: var(--accent-blue); }
+        textarea { width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); color: white; padding: 16px; border-radius: 12px; height: 100px; resize: none; font-family: 'Inter'; margin-bottom: 24px; }
+        .btn-upload { background: var(--bg-card); border: 1px dashed var(--text-muted); color: var(--text-secondary); width: 100%; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; margin-bottom: 24px; }
+        .btn-submit { background: var(--accent-blue); color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    </style>
+</head>
+<body>
+
+<div class="mobile-app-container">
+
+    <!-- ==========================================
+         SCREEN 1: LOGIN / SPLASH 
+         ========================================== -->
+    <div id="login-screen" class="screen active">
+        <div class="flex justify-between" style="justify-content: flex-end; gap: 12px;">
+            <div class="icon-btn"><span class="material-symbols-outlined">smartphone</span></div>
+        </div>
+
+        <div class="logo-container">
+            <div class="shield-icon"><span class="material-symbols-outlined">shield</span></div>
+            <div class="brand-title">Safe<span style="color:var(--accent-green)">Site</span> AI</div>
+            <div class="text-secondary text-sm mt-1">Site Safety & Hazard Detection System</div>
+        </div>
+
+        <!-- Go to Worker Mode -->
+        <div class="login-card" onclick="switchScreen('worker-dashboard')">
+            <div class="login-icon" style="background:var(--accent-green-dim); color:var(--accent-green);">
+                <span class="material-symbols-outlined">construction</span>
+            </div>
+            <div style="flex-grow:1;">
+                <h3 class="mb-1">Worker Mode</h3>
+                <p class="text-xs text-secondary">Scan badge or use biometric</p>
+            </div>
+            <span class="material-symbols-outlined text-muted">qr_code_scanner</span>
+        </div>
+
+        <!-- Go to Supervisor Mode -->
+        <div class="login-card" onclick="switchScreen('supervisor-dashboard')">
+            <div class="login-icon" style="background:var(--accent-blue-dim); color:var(--accent-blue);">
+                <span class="material-symbols-outlined">assignment_ind</span>
+            </div>
+            <div style="flex-grow:1;">
+                <h3 class="mb-1">Supervisor Mode</h3>
+                <p class="text-xs text-secondary">Full dashboard & controls</p>
+            </div>
+            <span class="material-symbols-outlined text-muted">fingerprint</span>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 2: SUPERVISOR DASHBOARD 
+         ========================================== -->
+    <div id="supervisor-dashboard" class="screen">
+        <div class="flex justify-between align-center mb-4">
+            <div>
+                <p class="text-secondary text-sm mb-1">Supervisor Dashboard</p>
+                <h1>Rajesh Kumar</h1>
+            </div>
+            <div class="flex gap-2">
+                <div class="icon-btn relative" onclick="switchScreen('alert-history-screen')">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="badge">2</span>
+                </div>
+                <div class="icon-btn" onclick="switchScreen('login-screen')">
+                    <span class="material-symbols-outlined">logout</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="material-symbols-outlined" style="color:var(--accent-green)">verified_user</span>
+                <div class="stat-value" style="color:var(--accent-green)">87</div>
+                <div class="text-xs text-secondary">Safety Score</div>
+            </div>
+            <div class="stat-card">
+                <span class="material-symbols-outlined text-muted">group</span>
+                <div class="stat-value text-primary">24</div>
+                <div class="text-xs text-secondary">Active Workers</div>
+            </div>
+            <div class="stat-card">
+                <span class="material-symbols-outlined" style="color:var(--accent-yellow)">warning</span>
+                <div class="stat-value" style="color:var(--accent-yellow)">2</div>
+                <div class="text-xs text-secondary">New Alerts</div>
+            </div>
+        </div>
+
+        <!-- Links to sub-screens -->
+        <div class="nav-list-item" onclick="switchScreen('worker-roster-screen')">
+            <div class="flex align-center gap-3">
+                <span class="material-symbols-outlined" style="color:var(--accent-blue)">group</span>
+                Worker Roster & Vitals
+            </div>
+            <span class="material-symbols-outlined text-secondary">chevron_right</span>
+        </div>
+
+        <div class="nav-list-item" onclick="switchScreen('zone-map-screen')">
+            <div class="flex align-center gap-3">
+                <span class="material-symbols-outlined" style="color:var(--accent-blue)">map</span>
+                Zone Map Overview
+            </div>
+            <span class="material-symbols-outlined text-secondary">chevron_right</span>
+        </div>
+
+        <!-- Sensors -->
+        <h2 class="mt-4"><span class="material-symbols-outlined" style="color:var(--accent-green)">bolt</span> Live Sensors</h2>
+        <div class="sensor-grid">
+            <div class="sensor-card">
+                <div class="sensor-header"><span>CO Level</span> <span class="material-symbols-outlined text-sm">remove</span></div>
+                <div class="sensor-value" style="color:var(--accent-green)">12 <span class="text-sm font-normal text-secondary">ppm</span></div>
+            </div>
+            <div class="sensor-card">
+                <div class="sensor-header"><span>H₂S Level</span> <span class="material-symbols-outlined text-sm" style="color:var(--accent-yellow)">trending_up</span></div>
+                <div class="sensor-value" style="color:var(--accent-yellow)">8 <span class="text-sm font-normal text-secondary">ppm</span></div>
+            </div>
+            <div class="sensor-card">
+                <div class="sensor-header"><span>Noise Level</span> <span class="material-symbols-outlined text-sm">remove</span></div>
+                <div class="sensor-value" style="color:var(--accent-yellow)">82 <span class="text-sm font-normal text-secondary">dB</span></div>
+            </div>
+            <div class="sensor-card">
+                <div class="sensor-header"><span>Dust (PM2.5)</span> <span class="material-symbols-outlined text-sm" style="color:var(--accent-green)">trending_down</span></div>
+                <div class="sensor-value" style="color:var(--accent-green)">15 <span class="text-sm font-normal text-secondary">µg/m³</span></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 3: ZONE MAP (Supervisor)
+         ========================================== -->
+    <div id="zone-map-screen" class="screen">
+        <div class="nav-header">
+            <div class="back-btn" onclick="switchScreen('supervisor-dashboard')">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </div>
+            <div>
+                <h1>Zone Map</h1>
+                <p class="text-sm text-secondary">Live site & personnel overview</p>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <!-- Simulated Overlays -->
+            <div class="map-overlay caution" style="top:20%; left:10%; width:40%; height:25%;">
+                <div class="map-dot" style="top:20%; left:30%;"></div>
+                <div class="map-dot" style="top:60%; left:60%; border-color:var(--accent-red)"></div>
+            </div>
+            <div class="map-overlay safe" style="top:50%; left:10%; width:40%; height:20%;">
+                <div class="map-dot" style="top:40%; left:50%;"></div>
+            </div>
+            <div class="map-overlay danger" style="top:50%; right:10%; width:35%; height:30%;"></div>
+        </div>
+
+        <div class="zone-legend">
+            <div class="legend-item"><div class="dot" style="background:var(--accent-green)"></div> Safe</div>
+            <div class="legend-item"><div class="dot" style="background:var(--accent-yellow)"></div> Caution</div>
+            <div class="legend-item"><div class="dot" style="background:var(--accent-red)"></div> Danger</div>
+        </div>
+
+        <div class="zone-grid">
+            <div class="zone-card border-green">
+                <div class="dot" style="background:var(--accent-green)"></div>
+                <h3>Zone A</h3><p>Processing Plant</p>
+            </div>
+            <div class="zone-card border-yellow">
+                <div class="flex justify-between w-100">
+                    <div class="dot" style="background:var(--accent-yellow)"></div>
+                    <span class="material-symbols-outlined text-xs" style="color:var(--accent-yellow)">warning</span>
+                </div>
+                <h3>Zone B</h3><p>Chemical Storage</p>
+            </div>
+            <div class="zone-card border-yellow">
+                <div class="flex justify-between w-100">
+                    <div class="dot" style="background:var(--accent-yellow)"></div>
+                    <span class="material-symbols-outlined text-xs" style="color:var(--accent-yellow)">warning</span>
+                </div>
+                <h3>Zone C</h3><p>Main Workshop</p>
+            </div>
+            <div class="zone-card border-green">
+                <div class="dot" style="background:var(--accent-green)"></div>
+                <h3>Zone D</h3><p>Loading Dock</p>
+            </div>
+            <div class="zone-card border-red">
+                <div class="flex justify-between w-100">
+                    <div class="dot" style="background:var(--accent-red)"></div>
+                    <span class="material-symbols-outlined text-xs" style="color:var(--accent-yellow)">warning</span>
+                </div>
+                <h3>Zone E</h3><p>Generator Room</p>
+            </div>
+            <div class="zone-card border-green">
+                <div class="dot" style="background:var(--accent-green)"></div>
+                <h3>Zone F</h3><p>Admin & Control</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 4: WORKER ROSTER (Supervisor)
+         ========================================== -->
+    <div id="worker-roster-screen" class="screen">
+        <div class="nav-header">
+            <div class="back-btn" onclick="switchScreen('supervisor-dashboard')">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </div>
+            <div>
+                <h1>Worker Roster</h1>
+                <p class="text-sm text-secondary">6 Personnel Monitored</p>
+            </div>
+        </div>
+
+        <div class="roster-labels">
+            <div style="width: 45%;">WORKER INFORMATION</div>
+            <div style="width: 20%;">STATUS</div>
+            <div style="width: 35%; text-align: right;">BIOMETRICS & POWER</div>
+        </div>
+
+        <!-- Worker 1 (At Risk) -->
+        <div class="roster-card at-risk">
+            <div class="flex justify-between align-center">
+                <div class="flex gap-3 align-center" style="width: 45%;">
+                    <div class="avatar" style="background:rgba(248, 113, 113, 0.2); color:var(--accent-red);">PP</div>
+                    <div>
+                        <h3 class="mb-1 text-sm">Priya Patel</h3>
+                        <p class="text-xs text-secondary flex align-center"><span class="material-symbols-outlined" style="font-size:12px; margin-right:2px;">location_on</span> Zone B</p>
+                    </div>
+                </div>
+                <div style="width: 20%;">
+                    <span class="status-tag status-at-risk">AT-RISK</span>
+                </div>
+                <div class="flex gap-3 align-center" style="width: 35%; justify-content: flex-end;">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-red);">favorite</span>
+                        <div class="text-xs font-bold">112 <span style="font-weight:normal; font-size:9px; color:var(--text-secondary)">BPM</span></div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-red);">construction</span>
+                        <div class="text-xs font-bold color-red" style="color:var(--accent-red)">NO</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--text-secondary);">battery_3_bar</span>
+                        <div class="text-xs" style="color:var(--accent-blue)">45%</div>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary">more_vert</span>
+                </div>
+            </div>
+            <!-- Expanded Alert for Priya -->
+            <div class="roster-critical-alert">
+                <span class="material-symbols-outlined">warning</span>
+                Critical Alert: PPE MISSING • ELEVATED HEART RATE
+            </div>
+        </div>
+
+        <!-- Worker 2 (Active) -->
+        <div class="roster-card">
+            <div class="flex justify-between align-center">
+                <div class="flex gap-3 align-center" style="width: 45%;">
+                    <div class="avatar" style="background:rgba(0, 210, 106, 0.2); color:var(--accent-green);">AS</div>
+                    <div>
+                        <h3 class="mb-1 text-sm">Amit Singh</h3>
+                        <p class="text-xs text-secondary flex align-center"><span class="material-symbols-outlined" style="font-size:12px; margin-right:2px;">location_on</span> Zone A</p>
+                    </div>
+                </div>
+                <div style="width: 20%;">
+                    <span class="status-tag status-active">ACTIVE</span>
+                </div>
+                <div class="flex gap-3 align-center" style="width: 35%; justify-content: flex-end;">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green);">favorite</span>
+                        <div class="text-xs font-bold">88 <span style="font-weight:normal; font-size:9px; color:var(--text-secondary)">BPM</span></div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green);">construction</span>
+                        <div class="text-xs font-bold" style="color:var(--accent-green)">OK</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--text-secondary);">battery_full</span>
+                        <div class="text-xs" style="color:var(--accent-blue)">78%</div>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary">more_vert</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worker 3 (Idle) -->
+        <div class="roster-card">
+            <div class="flex justify-between align-center">
+                <div class="flex gap-3 align-center" style="width: 45%;">
+                    <div class="avatar" style="background:rgba(250, 204, 21, 0.2); color:var(--accent-yellow);">SN</div>
+                    <div>
+                        <h3 class="mb-1 text-sm">Suresh Nair</h3>
+                        <p class="text-xs text-secondary flex align-center"><span class="material-symbols-outlined" style="font-size:12px; margin-right:2px;">location_on</span> Zone C</p>
+                    </div>
+                </div>
+                <div style="width: 20%;">
+                    <span class="status-tag status-idle">IDLE</span>
+                </div>
+                <div class="flex gap-3 align-center" style="width: 35%; justify-content: flex-end;">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green);">favorite</span>
+                        <div class="text-xs font-bold">95 <span style="font-weight:normal; font-size:9px; color:var(--text-secondary)">BPM</span></div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green);">construction</span>
+                        <div class="text-xs font-bold" style="color:var(--accent-green)">OK</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs" style="color:var(--text-secondary);">battery_2_bar</span>
+                        <div class="text-xs" style="color:var(--accent-blue)">30%</div>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary">more_vert</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worker 4 (Offline) -->
+        <div class="roster-card">
+            <div class="flex justify-between align-center">
+                <div class="flex gap-3 align-center" style="width: 45%;">
+                    <div class="avatar" style="background:rgba(255, 255, 255, 0.1); color:var(--text-secondary);">RK</div>
+                    <div>
+                        <h3 class="mb-1 text-sm" style="color:var(--text-secondary)">Ravi Kumar</h3>
+                        <p class="text-xs text-secondary flex align-center"><span class="material-symbols-outlined" style="font-size:12px; margin-right:2px;">location_on</span> Zone D</p>
+                    </div>
+                </div>
+                <div style="width: 20%;">
+                    <span class="status-tag status-offline">OFFLINE</span>
+                </div>
+                <div class="flex gap-3 align-center" style="width: 35%; justify-content: flex-end; opacity:0.5;">
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs">favorite</span>
+                        <div class="text-xs font-bold">--</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs">construction</span>
+                        <div class="text-xs font-bold" style="color:var(--accent-red)">NO</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="material-symbols-outlined text-xs">battery_alert</span>
+                        <div class="text-xs" style="color:var(--accent-blue)">0%</div>
+                    </div>
+                    <span class="material-symbols-outlined text-secondary">more_vert</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 5: ALERT HISTORY (Supervisor)
+         ========================================== -->
+    <div id="alert-history-screen" class="screen">
+        <div class="nav-header flex justify-between">
+            <div class="flex align-center gap-3">
+                <div class="back-btn" onclick="switchScreen('supervisor-dashboard')">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </div>
+                <div>
+                    <h1>Alert History</h1>
+                    <p class="text-sm text-secondary">Real-time activity log</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <div class="icon-btn"><span class="material-symbols-outlined text-sm">delete</span></div>
+                <div class="icon-btn"><span class="material-symbols-outlined text-sm" style="color:var(--accent-green)">magic_button</span></div>
+            </div>
+        </div>
+
+        <div class="timeline">
+            <!-- Timeline Item 1 -->
+            <div class="timeline-item">
+                <div class="timeline-icon green" style="border-color:var(--accent-green); color:var(--accent-green);">
+                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-meta flex justify-between">
+                        <div><span class="material-symbols-outlined text-xs">schedule</span> 10:52 am • System</div>
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green)">check_circle</span>
+                    </div>
+                    <h3 class="text-sm font-semibold">Maintenance: Elevator 2 scheduled for service at 16:00.</h3>
+                </div>
+            </div>
+
+            <!-- Timeline Item 2 -->
+            <div class="timeline-item">
+                <div class="timeline-icon green" style="border-color:var(--accent-green); color:var(--accent-green);">
+                    <span class="material-symbols-outlined text-sm">check_circle</span>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-meta flex justify-between">
+                        <div><span class="material-symbols-outlined text-xs">schedule</span> 10:51 am • System</div>
+                        <span class="material-symbols-outlined text-xs" style="color:var(--accent-green)">check_circle</span>
+                    </div>
+                    <h3 class="text-sm font-semibold">Shift Supervisor: Hourly headcount check required in 10 mins.</h3>
+                </div>
+            </div>
+
+            <!-- Timeline Item 3 (Warning) -->
+            <div class="timeline-item">
+                <div class="timeline-icon yellow" style="border-color:var(--accent-yellow); color:var(--accent-yellow);">
+                    <span class="material-symbols-outlined text-sm">warning</span>
+                </div>
+                <div class="timeline-card" style="border-color:rgba(250, 204, 21, 0.3);">
+                    <div class="timeline-meta flex justify-between">
+                        <div><span class="material-symbols-outlined text-xs">schedule</span> 14:32 • Zone B</div>
+                    </div>
+                    <h3 class="text-sm font-semibold">H₂S level rising in Zone B - approaching threshold</h3>
+                </div>
+            </div>
+
+            <!-- Timeline Item 4 (Critical) -->
+            <div class="timeline-item">
+                <div class="timeline-icon red" style="border-color:var(--accent-red); color:var(--accent-red); background:rgba(248, 113, 113, 0.1);">
+                    <span class="material-symbols-outlined text-sm">cancel</span>
+                </div>
+                <div class="timeline-card" style="border-color:rgba(248, 113, 113, 0.5); background:linear-gradient(to right, rgba(248, 113, 113, 0.05), var(--bg-card));">
+                    <div class="timeline-meta flex justify-between">
+                        <div><span class="material-symbols-outlined text-xs">schedule</span> 14:15 • Zone B</div>
+                    </div>
+                    <h3 class="text-sm font-semibold color-red" style="color:var(--accent-red)">Worker Priya Patel - PPE non-compliance detected</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 6: WORKER DASHBOARD (Worker Mode)
+         ========================================== -->
+    <div id="worker-dashboard" class="screen">
+        <div class="nav-header flex justify-between">
+            <div class="flex align-center gap-3">
+                <div class="icon-btn" style="background:var(--accent-green-dim); color:var(--accent-green); border:none;">
+                    <strong>AS</strong>
+                </div>
+                <div>
+                    <h1 style="font-size:18px;">Amit Singh</h1>
+                    <p class="text-sm" style="color:var(--accent-green)">● ACTIVE in Zone A</p>
+                </div>
+            </div>
+            <div class="icon-btn" onclick="switchScreen('login-screen')">
+                <span class="material-symbols-outlined">logout</span>
+            </div>
+        </div>
+
+        <div class="vitals-card">
+            <div>
+                <p class="text-sm text-secondary mb-1">Live Heart Rate</p>
+                <div class="flex align-center gap-2">
+                    <span class="material-symbols-outlined" style="color:var(--accent-green)">favorite</span>
+                    <span class="vital-primary">88</span>
+                    <span class="text-sm text-secondary">BPM</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-secondary mb-1">Sensors</p>
+                <div class="flex gap-2 justify-end">
+                    <span class="material-symbols-outlined" style="color:var(--accent-green)">construction</span>
+                    <span class="material-symbols-outlined" style="color:var(--accent-blue)">battery_full</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="caution-banner" style="background:var(--accent-yellow-dim); border:1px solid var(--accent-yellow); color:var(--accent-yellow); padding:16px; border-radius:12px; display:flex; gap:12px; margin-bottom:32px;">
+            <span class="material-symbols-outlined">warning</span>
+            <div>
+                <h3 style="margin-bottom:4px; font-size:14px;">Caution: High Noise Level</h3>
+                <p class="text-xs">82dB detected in Zone A. Ear protection required.</p>
+            </div>
+        </div>
+
+        <!-- Danger Call / SOS -->
+        <div class="sos-container">
+            <button class="sos-btn">SOS</button>
+            <p class="text-sm text-secondary mt-4">Press and hold to alert supervisor<br>and nearby workers instantly.</p>
+        </div>
+
+        <div class="nav-list-item" onclick="switchScreen('report-incident-screen')" style="background:var(--accent-blue-dim); border-color:var(--accent-blue);">
+            <div class="flex align-center gap-3">
+                <span class="material-symbols-outlined" style="color:var(--accent-blue)">report</span>
+                Report an Incident
+            </div>
+            <span class="material-symbols-outlined text-secondary">chevron_right</span>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         SCREEN 7: REPORT INCIDENT FORM 
+         ========================================== -->
+    <div id="report-incident-screen" class="screen">
+        <div class="nav-header">
+            <div class="back-btn" onclick="switchScreen('worker-dashboard')">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </div>
+            <div>
+                <h1>Report Incident</h1>
+                <p class="text-sm text-secondary">Submit a safety report</p>
+            </div>
+        </div>
+
+        <span class="form-label">Incident Type</span>
+        <div class="chip-grid">
+            <div class="chip">Gas Leak</div>
+            <div class="chip">Structural</div>
+            <div class="chip">Electrical</div>
+            <div class="chip">Fire</div>
+            <div class="chip">PPE Violation</div>
+            <div class="chip active-blue">Fall Hazard</div>
+            <div class="chip">Equipment</div>
+        </div>
+
+        <span class="form-label">Severity Level</span>
+        <div class="chip-grid">
+            <div class="chip">LOW</div>
+            <div class="chip active-yellow">MEDIUM</div>
+            <div class="chip">HIGH</div>
+            <div class="chip">CRITICAL</div>
+        </div>
+
+        <span class="form-label"><span class="material-symbols-outlined text-sm" style="vertical-align:middle; margin-right:4px;">location_on</span>Location</span>
+        <div class="chip-grid">
+            <div class="chip active-blue">Zone A</div>
+            <div class="chip">Zone B</div>
+            <div class="chip">Zone C</div>
+            <div class="chip">Zone D</div>
+            <div class="chip">Zone E</div>
+            <div class="chip">Zone F</div>
+        </div>
+
+        <span class="form-label">Description</span>
+        <textarea placeholder="Describe the hazard or incident..."></textarea>
+
+        <span class="form-label">Photo Evidence</span>
+        <div class="btn-upload">
+            <span class="material-symbols-outlined mb-1">photo_camera</span>
+            <p class="text-sm">Take / Upload Photo</p>
+        </div>
+
+        <button class="btn-submit" onclick="switchScreen('worker-dashboard')">
+            <span class="material-symbols-outlined">send</span> Submit Report
+        </button>
+        
+        <p class="text-center text-xs text-muted mt-4">Reported by Amit Singh • 8/18/2026</p>
+    </div>
+
+</div>
+
+<!-- Navigation Logic -->
+<script>
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
